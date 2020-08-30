@@ -8,8 +8,8 @@ import Button from "@material-ui/core/Button";
 import {FormHelperText} from "@material-ui/core";
 
 class AddSequence extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       data: {
         name: {
@@ -27,7 +27,8 @@ class AddSequence extends Component {
           error: false,
           errorMessage: ''
         }
-      }
+      },
+      isDataValid: false
     }
   }
 
@@ -40,9 +41,10 @@ class AddSequence extends Component {
       let data = {...prevState.data};
       data[id].value = value
       return {data};
-    });
+    }, () => this.updateInputValidation(id, value));
+  };
 
-    // Validation
+  updateInputValidation = (id, value) => {
     if (id === 'name') {
       this.nameValidation(value);
     } else if (id === 'description') {
@@ -50,7 +52,7 @@ class AddSequence extends Component {
     } else if (id === 'sequence') {
       this.sequenceValidation(value);
     }
-  };
+  }
 
   nameValidation = (name) => {
     let error = false;
@@ -66,7 +68,7 @@ class AddSequence extends Component {
       data.name.error = error;
       data.name.errorMessage = errorMessage;
       return {data};
-    });
+    }, this.updateIsDataValid);
   }
 
   descriptionValidation = (description) => {
@@ -83,13 +85,13 @@ class AddSequence extends Component {
       data.description.error = error;
       data.description.errorMessage = errorMessage;
       return {data};
-    });
+    }, this.updateIsDataValid);
   }
 
   sequenceValidation = (sequence) => {
     let error = false;
     let errorMessage = '';
-    let re = new RegExp('^[A|C|G|T]*$');
+    let re = new RegExp('^[ACGT]*$');
 
     if (sequence === '') {
       error = true;
@@ -104,12 +106,53 @@ class AddSequence extends Component {
       data.sequence.error = error;
       data.sequence.errorMessage = errorMessage;
       return {data};
-    });
-  }
+    }, this.updateIsDataValid);
+  };
 
-  handleSubmit = (event) => {
-    //Make a network call somewhere
-    event.preventDefault();
+  getFormData = () => ({
+    name: this.state.data.name.value,
+    description: this.state.data.description.value,
+    sequence: this.state.data.sequence.value
+  });
+
+  updateIsDataValid = () => {
+    let isDataValid = false;
+
+    // Including empty checks for initial state
+    if (this.state.data.name.value !== '' && !this.state.data.name.error
+      && this.state.data.description.value !== '' && !this.state.data.description.error
+      && this.state.data.sequence.value !== '' && !this.state.data.sequence.error) {
+      isDataValid = true;
+    }
+
+    this.setState({isDataValid});
+  };
+
+  handleSubmit = () => {
+    fetch('https://dna-sequence-tool-api.herokuapp.com/sequences', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(this.getFormData())
+    })
+      .then(res => res.json())
+      .then(
+        () => {
+          this.setState({
+            isLoaded: true
+          });
+        },
+        // Note: it's important to handle errors here
+        // instead of a catch() block so that we don't swallow
+        // exceptions from actual bugs in components.
+        (error) => {
+          this.setState({
+            isLoaded: true,
+            error
+          });
+        }
+      )
   }
 
   render() {
@@ -144,7 +187,15 @@ class AddSequence extends Component {
         />
         <FormHelperText id='sequence-helper-text'>{this.state.data.sequence.errorMessage}</FormHelperText>
       </FormControl>
-      <Button color='primary' disabled type='submit' variant='contained'>Submit</Button>
+      <Button
+        color='primary'
+        disabled={!this.state.isDataValid}
+        onClick={this.handleSubmit}
+        type='submit'
+        variant='contained'
+      >
+        Submit
+      </Button>
     </FormGroup>
   }
 }
