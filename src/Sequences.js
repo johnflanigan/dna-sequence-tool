@@ -9,7 +9,12 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
-import Modal from "@material-ui/core/Modal";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import Button from "@material-ui/core/Button";
+import DialogActions from "@material-ui/core/DialogActions";
 
 const styles = theme => ({
   modal: {
@@ -23,7 +28,7 @@ const styles = theme => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
-  paragraph: {
+  dialogContentText: {
     wordBreak: 'break-word'
   },
   table: {
@@ -108,18 +113,6 @@ class Sequences extends Component {
 
     return (
       <div>
-        <Modal
-          aria-labelledby="sequence-modal-name"
-          aria-describedby="sequence-modal-sequence"
-          className={classes.modal}
-          open={this.state.modal.isOpen}
-          onClose={this.closeModal}
-        >
-          <div className={classes.paper}>
-            <h2 id="sequence-modal-name">{this.state.modal.name}</h2>
-            <p id="sequence-modal-sequence" className={classes.paragraph}>{this.state.modal.sequence}</p>
-          </div>
-        </Modal>
         <TableContainer component={Paper}>
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
@@ -146,6 +139,28 @@ class Sequences extends Component {
             </TableBody>
           </Table>
         </TableContainer>
+        <Dialog
+          open={this.state.modal.isOpen}
+          onClose={this.closeModal}
+          scroll='paper'
+          aria-labelledby="sequence-dialog-title"
+          aria-describedby="sequence-dialog-description"
+        >
+          <DialogTitle id="sequence-dialog-title">{this.state.modal.name}</DialogTitle>
+          <DialogContent dividers>
+            <DialogContentText
+              className={classes.dialogContentText}
+              id="sequence-dialog-description"
+            >
+              {this.state.modal.sequence}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.closeModal} color="primary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>);
   }
 }
