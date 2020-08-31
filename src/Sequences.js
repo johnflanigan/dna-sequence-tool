@@ -16,6 +16,8 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import Button from "@material-ui/core/Button";
 import DialogActions from "@material-ui/core/DialogActions";
 
+const truncatedSequenceSize = 40;
+
 const styles = theme => ({
   modal: {
     display: 'flex',
@@ -58,8 +60,8 @@ class Sequences extends Component {
         (sequences) => {
           const rows = [...sequences];
           rows.map((row) => {
-            if (row.sequence.length > 8) {
-              row.preview = row.sequence.substring(0, 8) + '...';
+            if (row.sequence.length > truncatedSequenceSize) {
+              row.preview = row.sequence.substring(0, truncatedSequenceSize) + '...';
             } else {
               row.preview = row.sequence;
             }
@@ -108,13 +110,32 @@ class Sequences extends Component {
     }));
   }
 
+  /**
+   * Colors based on http://biomodel.uah.es/en/model4/dna/atgc.htm
+   * @param sequence
+   * @returns a list of one character, colored spans
+   */
+  colorSequence = (sequence) => (
+    sequence.split('').map((char, index) => {
+      if (char === 'A') {
+        return (<span key={index} style={{color: '#5050ff'}}>{char}</span>);
+      } else if (char === 'C') {
+        return (<span key={index} style={{color: '#e00000'}}>{char}</span>);
+      } else if (char === 'G') {
+        return (<span key={index} style={{color: '#00c000'}}>{char}</span>);
+      } else if (char === 'T') {
+        return (<span key={index} style={{color: '#e6e600'}}>{char}</span>);
+      }
+    })
+  );
+
   render() {
     const classes = this.props.classes;
 
     return (
       <div>
         <TableContainer component={Paper}>
-          <Table className={classes.table} aria-label="simple table">
+          <Table className={classes.table} aria-label="sequence table">
             <TableHead>
               <TableRow>
                 <TableCell>Name</TableCell>
@@ -152,7 +173,7 @@ class Sequences extends Component {
               className={classes.dialogContentText}
               id="sequence-dialog-description"
             >
-              {this.state.modal.sequence}
+              {this.colorSequence(this.state.modal.sequence)}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
