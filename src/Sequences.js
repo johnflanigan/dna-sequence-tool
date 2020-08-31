@@ -16,6 +16,8 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import Button from "@material-ui/core/Button";
 import DialogActions from "@material-ui/core/DialogActions";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
+import InputLabel from "@material-ui/core/InputLabel";
+import Input from "@material-ui/core/Input";
 
 const truncatedSequenceSize = 40;
 
@@ -51,7 +53,8 @@ class Sequences extends Component {
         name: '',
         sequence: ''
       },
-      direction: 'asc'
+      direction: 'asc',
+      filter: ''
     };
   }
 
@@ -112,6 +115,12 @@ class Sequences extends Component {
     }));
   }
 
+  filterHandler = (event) => {
+    this.setState({
+      filter: event.target.value
+    });
+  }
+
   sortHandler = () => {
     this.setState((prevState) => {
       if (prevState.direction === 'desc') {
@@ -156,10 +165,17 @@ class Sequences extends Component {
   }
 
   getSortedAndFilteredRows = () => {
+    // Perform in-place sorting
     if (this.state.direction === 'asc') {
-      return this.state.rows.sort(this.ascendingNameComparator);
+      this.state.rows.sort(this.ascendingNameComparator);
     } else {
-      return this.state.rows.sort(this.ascendingNameComparator).reverse();
+      this.state.rows.sort(this.ascendingNameComparator).reverse();
+    }
+
+    if (this.state.filter === '') {
+      return this.state.rows;
+    } else {
+      return this.state.rows.filter((row) => row.name.toLowerCase().includes(this.state.filter.toLowerCase()));
     }
   }
 
@@ -168,6 +184,12 @@ class Sequences extends Component {
 
     return (
       <div>
+        <InputLabel>Search filter (case insensitive)</InputLabel>
+        <Input
+          id='filter'
+          onChange={this.filterHandler}
+          value={this.state.filter}
+        />
         <TableContainer component={Paper}>
           <Table className={classes.table} aria-label="sequence table">
             <TableHead>
@@ -180,7 +202,7 @@ class Sequences extends Component {
                   >
                     Name
                   </TableSortLabel>
-                  </TableCell>
+                </TableCell>
                 <TableCell>Description</TableCell>
                 <TableCell>Sequence</TableCell>
               </TableRow>
