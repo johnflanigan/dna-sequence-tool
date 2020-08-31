@@ -15,6 +15,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import Button from "@material-ui/core/Button";
 import DialogActions from "@material-ui/core/DialogActions";
+import TableSortLabel from "@material-ui/core/TableSortLabel";
 
 const truncatedSequenceSize = 40;
 
@@ -49,7 +50,8 @@ class Sequences extends Component {
         isOpen: false,
         name: '',
         sequence: ''
-      }
+      },
+      direction: 'asc'
     };
   }
 
@@ -110,6 +112,16 @@ class Sequences extends Component {
     }));
   }
 
+  sortHandler = () => {
+    this.setState((prevState) => {
+      if (prevState.direction === 'desc') {
+        return {direction: 'asc'};
+      } else {
+        return {direction: 'desc'};
+      }
+    });
+  }
+
   /**
    * Colors based on http://biomodel.uah.es/en/model4/dna/atgc.htm
    * @param sequence
@@ -129,6 +141,28 @@ class Sequences extends Component {
     })
   );
 
+  ascendingNameComparator = (a, b) => {
+    const lowerCaseNameA = a.name.toLowerCase();
+    const lowerCaseNameB = b.name.toLowerCase();
+
+    const result = lowerCaseNameA.localeCompare(lowerCaseNameB);
+
+    // Break ties by considering case
+    if (result === 0) {
+      return a.name.localeCompare(b.name);
+    } else {
+      return result;
+    }
+  }
+
+  getSortedAndFilteredRows = () => {
+    if (this.state.direction === 'asc') {
+      return this.state.rows.sort(this.ascendingNameComparator);
+    } else {
+      return this.state.rows.sort(this.ascendingNameComparator).reverse();
+    }
+  }
+
   render() {
     const classes = this.props.classes;
 
@@ -138,13 +172,21 @@ class Sequences extends Component {
           <Table className={classes.table} aria-label="sequence table">
             <TableHead>
               <TableRow>
-                <TableCell>Name</TableCell>
+                <TableCell>
+                  <TableSortLabel
+                    active={true}
+                    direction={this.state.direction}
+                    onClick={this.sortHandler}
+                  >
+                    Name
+                  </TableSortLabel>
+                  </TableCell>
                 <TableCell>Description</TableCell>
                 <TableCell>Sequence</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {this.state.rows.map((row) => (
+              {this.getSortedAndFilteredRows().map((row) => (
                 <TableRow
                   hover
                   key={row.id}
