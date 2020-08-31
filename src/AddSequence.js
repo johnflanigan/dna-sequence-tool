@@ -11,7 +11,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 
 class AddSequence extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       data: {
         name: {
@@ -34,7 +34,7 @@ class AddSequence extends Component {
       isLoading: false,
       successMessage: '',
       errorMessage: ''
-    }
+    };
   }
 
   handleChange = (event) => {
@@ -162,10 +162,7 @@ class AddSequence extends Component {
             });
           }
         },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
+        () => {
           this.setState({
             isLoaded: false,
           });
