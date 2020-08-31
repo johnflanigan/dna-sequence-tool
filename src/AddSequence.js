@@ -6,6 +6,8 @@ import Input from "@material-ui/core/Input";
 import FormGroup from "@material-ui/core/FormGroup";
 import Button from "@material-ui/core/Button";
 import {FormHelperText} from "@material-ui/core";
+import Alert from '@material-ui/lab/Alert';
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 class AddSequence extends Component {
   constructor(props) {
@@ -28,7 +30,10 @@ class AddSequence extends Component {
           errorMessage: ''
         }
       },
-      isDataValid: false
+      isDataValid: false,
+      isLoading: false,
+      successMessage: '',
+      errorMessage: ''
     }
   }
 
@@ -129,7 +134,11 @@ class AddSequence extends Component {
   };
 
   handleSubmit = () => {
-    fetch('https://dna-sequence-tool-api.herokuapp.com/sequences', {
+    this.setState({
+      isLoading: true,
+      successMessage: '',
+      errorMessage: ''
+    }, () => fetch('https://dna-sequence-tool-api.herokuapp.com/sequences', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -138,32 +147,43 @@ class AddSequence extends Component {
     })
       .then(res => res.json())
       .then(
-        () => {
-          this.setState({
-            isLoaded: true
-          });
+        (result) => {
+          if (result.name) {
+            this.setState({
+              isLoading: false,
+              successMessage: `${result.name} submitted successfully.`
+            }, () => {
+              console.log(this.state)
+            });
+          } else {
+            this.setState({
+              isLoading: false,
+              errorMessage: result.errorMessage
+            });
+          }
         },
         // Note: it's important to handle errors here
         // instead of a catch() block so that we don't swallow
         // exceptions from actual bugs in components.
         (error) => {
           this.setState({
-            isLoaded: true,
-            error
+            isLoaded: false,
           });
         }
-      )
+      ))
   }
 
   render() {
     return <FormGroup>
+      {this.state.successMessage && <Alert severity="success">{this.state.successMessage}</Alert>}
+      {this.state.errorMessage && <Alert severity="error">{this.state.errorMessage}</Alert>}
       <FormControl error={this.state.data.name.error}>
         <InputLabel>Sequence Name</InputLabel>
         <Input
           aria-describedby='name-helper-text'
           id='name'
-          value={this.state.data.name.value}
           onChange={this.handleChange}
+          value={this.state.data.name.value}
         />
         <FormHelperText id='name-helper-text'>{this.state.data.name.errorMessage}</FormHelperText>
       </FormControl>
@@ -172,8 +192,8 @@ class AddSequence extends Component {
         <Input
           aria-describedby='description-helper-text'
           id='description'
-          value={this.state.data.description.value}
           onChange={this.handleChange}
+          value={this.state.data.description.value}
         />
         <FormHelperText id='description-helper-text'>{this.state.data.description.errorMessage}</FormHelperText>
       </FormControl>
@@ -182,20 +202,22 @@ class AddSequence extends Component {
         <Input
           aria-describedby='sequence-helper-text'
           id='sequence'
-          value={this.state.data.sequence.value}
+          multiline
           onChange={this.handleChange}
+          value={this.state.data.sequence.value}
         />
         <FormHelperText id='sequence-helper-text'>{this.state.data.sequence.errorMessage}</FormHelperText>
       </FormControl>
       <Button
         color='primary'
-        disabled={!this.state.isDataValid}
+        disabled={!this.state.isDataValid || this.state.isLoading}
         onClick={this.handleSubmit}
         type='submit'
         variant='contained'
       >
         Submit
       </Button>
+      {this.state.isLoading && <LinearProgress/>}
     </FormGroup>
   }
 }
