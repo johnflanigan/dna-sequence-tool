@@ -1,10 +1,25 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# dna-sequence-tool
+
+Running application can be found here: https://dna-sequence-tool.herokuapp.com. Because Heroku aggressively shuts down free servers, the initial visit to the UI and the first request to the server can take an unexpectedly long amount of time.
+
+The backend code for this application can be found [here](https://github.com/johnflanigan/dna-sequence-tool-api) and the running service can be found [here](http://dna-sequence-tool-api.herokuapp.com/).
+
+## To Do
+
+Here are some potential future enhancements for this tool.
+
+* Add tests
+* Add table extraction
+* Add bulk upload
+* Put views on different routes
+* Pagination on table
+  * Filtering and sorting server-side
 
 ## Available Scripts
 
 In the project directory, you can run:
 
-### `npm start`
+### `npm dev`
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.

@@ -165,8 +165,6 @@ class AddSequence extends Component {
             this.setState({
               isLoading: false,
               successMessage: `${result.name} submitted successfully.`
-            }, () => {
-              console.log(this.state)
             });
           } else {
             this.setState({

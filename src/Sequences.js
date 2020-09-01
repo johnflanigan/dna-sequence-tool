@@ -18,17 +18,21 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
 import FormControl from "@material-ui/core/FormControl";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 const truncatedSequenceSize = 40;
 
 const styles = theme => ({
-  formControl: {
-    margin: 5
-  },
   dialog: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  formControl: {
+    margin: 5
+  },
+  linearProgress: {
+    margin: 5
   },
   paper: {
     backgroundColor: theme.palette.background.paper,
@@ -91,8 +95,6 @@ class Sequences extends Component {
             idToSequence: idToSequence,
             isLoading: false,
             rows: rows,
-          }, () => {
-            console.log(this.state)
           });
         },
         () => {
@@ -140,20 +142,20 @@ class Sequences extends Component {
   }
 
   /**
-   * Colors based on http://biomodel.uah.es/en/model4/dna/atgc.htm
+   * Colors based on https://www.biostars.org/p/171056/
    * @param sequence
    * @returns a list of one character, colored spans
    */
   colorSequence = (sequence) => (
     sequence.split('').map((char, index) => {
       if (char === 'A') {
-        return (<span key={index} style={{color: '#5050ff'}}>{char}</span>);
+        return (<span key={index} style={{color: '#b3321c'}}>{char}</span>);
       } else if (char === 'C') {
-        return (<span key={index} style={{color: '#e00000'}}>{char}</span>);
+        return (<span key={index} style={{color: '#0a30b8'}}>{char}</span>);
       } else if (char === 'G') {
-        return (<span key={index} style={{color: '#00c000'}}>{char}</span>);
+        return (<span key={index} style={{color: '#bdaf3b'}}>{char}</span>);
       } else if (char === 'T') {
-        return (<span key={index} style={{color: '#e6e600'}}>{char}</span>);
+        return (<span key={index} style={{color: '#54b83c'}}>{char}</span>);
       }
     })
   );
@@ -229,16 +231,17 @@ class Sequences extends Component {
                   key={row.id}
                   onClick={(event) => this.openDialog(event, row.id)}
                 >
-                  <TableCell className={classes.tableCell} component="th" scope="row">
+                  <TableCell component="th" scope="row">
                     {row.name}
                   </TableCell>
-                  <TableCell className={classes.tableCell}>{row.description}</TableCell>
-                  <TableCell className={classes.tableCell}>{row.preview}</TableCell>
+                  <TableCell>{row.description}</TableCell>
+                  <TableCell>{row.preview}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
+        {this.state.isLoading && <LinearProgress className={classes.linearProgress}/>}
         <Dialog
           open={this.state.dialog.isOpen}
           onClose={this.closeDialog}
@@ -256,7 +259,11 @@ class Sequences extends Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.closeDialog} color="primary">
+            <Button
+              color='primary'
+              onClick={this.closeDialog}
+              variant='contained'
+            >
               Close
             </Button>
           </DialogActions>

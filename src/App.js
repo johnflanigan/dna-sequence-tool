@@ -15,8 +15,17 @@ import AddSequence from "./AddSequence";
 import Sequences from "./Sequences";
 import withStyles from "@material-ui/core/styles/withStyles";
 import PropTypes from 'prop-types';
+import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 
 const drawerWidth = 240;
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#2d673e',
+    },
+  },
+});
 
 const styles = theme => ({
   root: {
@@ -70,50 +79,52 @@ class App extends Component {
 
     return (
       <div className={classes.root}>
-        <CssBaseline/>
-        <AppBar position="fixed" className={classes.appBar}>
-          <Toolbar>
-            <Typography variant="h6" noWrap>
-              DNA Sequence Tool
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <Drawer
-          className={classes.drawer}
-          variant="permanent"
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-          anchor="left"
-        >
-          <div className={classes.toolbar}/>
-          <Divider/>
-          <List>
-            <ListItem
-              button
-              key='Add DNA Sequence'
-              onClick={this.clickAddSequence}
-              selected={this.state.addSequence}
-            >
-              <ListItemIcon><AddIcon/></ListItemIcon>
-              <ListItemText primary='Add DNA Sequence'/>
-            </ListItem>
-            <ListItem
-              button
-              key='Sequences'
-              onClick={this.clickSequences}
-              selected={this.state.sequences}
-            >
-              <ListItemIcon><TableChartIcon/></ListItemIcon>
-              <ListItemText primary='Sequences'/>
-            </ListItem>
-          </List>
-        </Drawer>
-        <main className={classes.content}>
-          <div className={classes.toolbar}/>
-          {this.state.addSequence && <AddSequence/>}
-          {this.state.sequences && <Sequences/>}
-        </main>
+        <ThemeProvider theme={theme}>
+          <CssBaseline/>
+          <AppBar position="fixed" className={classes.appBar}>
+            <Toolbar>
+              <Typography variant="h6" noWrap>
+                DNA Sequence Tool
+              </Typography>
+            </Toolbar>
+          </AppBar>
+          <Drawer
+            className={classes.drawer}
+            variant="permanent"
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+            anchor="left"
+          >
+            <div className={classes.toolbar}/>
+            <Divider/>
+            <List>
+              <ListItem
+                button
+                key='Add DNA Sequence'
+                onClick={this.clickAddSequence}
+                selected={this.state.addSequence}
+              >
+                <ListItemIcon><AddIcon/></ListItemIcon>
+                <ListItemText primary='Add DNA Sequence'/>
+              </ListItem>
+              <ListItem
+                button
+                key='Sequences'
+                onClick={this.clickSequences}
+                selected={this.state.sequences}
+              >
+                <ListItemIcon><TableChartIcon/></ListItemIcon>
+                <ListItemText primary='Sequences'/>
+              </ListItem>
+            </List>
+          </Drawer>
+          <main className={classes.content}>
+            <div className={classes.toolbar}/>
+            {this.state.addSequence && <AddSequence/>}
+            {this.state.sequences && <Sequences/>}
+          </main>
+        </ThemeProvider>
       </div>
     );
   }
