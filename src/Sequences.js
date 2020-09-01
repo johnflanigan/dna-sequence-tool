@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import './App.css';
 import Table from "@material-ui/core/Table";
 import TableContainer from "@material-ui/core/TableContainer";
 import Paper from "@material-ui/core/Paper";
@@ -24,7 +23,7 @@ const truncatedSequenceSize = 40;
 
 const styles = theme => ({
   formControl: {
-    margin: 10
+    margin: 5
   },
   dialog: {
     display: 'flex',
@@ -41,12 +40,13 @@ const styles = theme => ({
     wordBreak: 'break-word'
   },
   table: {
-    margin: 10,
     minWidth: 650,
     tableLayout: 'fixed',
     wordBreak: 'break-word'
   },
-  tableCell: {}
+  tableContainer: {
+    margin: 5
+  }
 });
 
 class Sequences extends Component {
@@ -200,7 +200,7 @@ class Sequences extends Component {
             value={this.state.filter}
           />
         </FormControl>
-        <TableContainer component={Paper}>
+        <TableContainer className={classes.tableContainer} component={Paper}>
           <Table className={classes.table} aria-label="sequence table">
             <colgroup>
               <col style={{width: '25%'}}/>

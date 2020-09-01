@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import './App.css';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
@@ -8,6 +7,20 @@ import Button from "@material-ui/core/Button";
 import {FormHelperText} from "@material-ui/core";
 import Alert from '@material-ui/lab/Alert';
 import LinearProgress from "@material-ui/core/LinearProgress";
+import PropTypes from "prop-types";
+import withStyles from "@material-ui/core/styles/withStyles";
+
+const styles = theme => ({
+  button: {
+    margin: 5
+  },
+  formControl: {
+    margin: 5
+  },
+  linearProgress: {
+    margin: 5
+  }
+});
 
 class AddSequence extends Component {
   constructor(props) {
@@ -171,30 +184,34 @@ class AddSequence extends Component {
   }
 
   render() {
-    return <FormGroup>
+    const classes = this.props.classes;
+
+    return (<FormGroup>
       {this.state.successMessage && <Alert severity="success">{this.state.successMessage}</Alert>}
       {this.state.errorMessage && <Alert severity="error">{this.state.errorMessage}</Alert>}
-      <FormControl error={this.state.data.name.error}>
+      <FormControl className={classes.formControl} error={this.state.data.name.error}>
         <InputLabel>Sequence Name</InputLabel>
         <Input
           aria-describedby='name-helper-text'
           id='name'
+          multiline
           onChange={this.handleChange}
           value={this.state.data.name.value}
         />
         <FormHelperText id='name-helper-text'>{this.state.data.name.errorMessage}</FormHelperText>
       </FormControl>
-      <FormControl error={this.state.data.description.error}>
+      <FormControl className={classes.formControl} error={this.state.data.description.error}>
         <InputLabel>Sequence Description</InputLabel>
         <Input
           aria-describedby='description-helper-text'
           id='description'
+          multiline
           onChange={this.handleChange}
           value={this.state.data.description.value}
         />
         <FormHelperText id='description-helper-text'>{this.state.data.description.errorMessage}</FormHelperText>
       </FormControl>
-      <FormControl error={this.state.data.sequence.error}>
+      <FormControl className={classes.formControl} error={this.state.data.sequence.error}>
         <InputLabel>DNA Sequence</InputLabel>
         <Input
           aria-describedby='sequence-helper-text'
@@ -206,6 +223,7 @@ class AddSequence extends Component {
         <FormHelperText id='sequence-helper-text'>{this.state.data.sequence.errorMessage}</FormHelperText>
       </FormControl>
       <Button
+        className={classes.button}
         color='primary'
         disabled={!this.state.isDataValid || this.state.isLoading}
         onClick={this.handleSubmit}
@@ -214,9 +232,13 @@ class AddSequence extends Component {
       >
         Submit
       </Button>
-      {this.state.isLoading && <LinearProgress/>}
-    </FormGroup>
+      {this.state.isLoading && <LinearProgress className={classes.linearProgress}/>}
+    </FormGroup>);
   }
 }
 
-export default AddSequence;
+AddSequence.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(AddSequence);

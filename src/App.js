@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import './App.css';
 import Typography from "@material-ui/core/Typography";
 import Drawer from '@material-ui/core/Drawer';
 import ListItem from "@material-ui/core/ListItem";
