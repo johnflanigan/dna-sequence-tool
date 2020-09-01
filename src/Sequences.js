@@ -18,11 +18,15 @@ import DialogActions from "@material-ui/core/DialogActions";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
+import FormControl from "@material-ui/core/FormControl";
 
 const truncatedSequenceSize = 40;
 
 const styles = theme => ({
-  modal: {
+  formControl: {
+    margin: 10
+  },
+  dialog: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -37,8 +41,12 @@ const styles = theme => ({
     wordBreak: 'break-word'
   },
   table: {
+    margin: 10,
     minWidth: 650,
-  }
+    tableLayout: 'fixed',
+    wordBreak: 'break-word'
+  },
+  tableCell: {}
 });
 
 class Sequences extends Component {
@@ -48,7 +56,7 @@ class Sequences extends Component {
       idToSequence: {},
       isLoading: true,
       rows: [],
-      modal: {
+      dialog: {
         isOpen: false,
         name: '',
         sequence: ''
@@ -95,9 +103,9 @@ class Sequences extends Component {
       )
   }
 
-  openModal = (event, id) => {
+  openDialog = (event, id) => {
     this.setState((prevState) => ({
-      modal: {
+      dialog: {
         isOpen: true,
         name: prevState.idToSequence[id].name,
         sequence: prevState.idToSequence[id].sequence
@@ -105,9 +113,9 @@ class Sequences extends Component {
     }));
   }
 
-  closeModal = () => {
+  closeDialog = () => {
     this.setState((prevState) => ({
-      modal: {
+      dialog: {
         isOpen: false,
         name: '',
         sequence: ''
@@ -184,14 +192,21 @@ class Sequences extends Component {
 
     return (
       <div>
-        <InputLabel>Search filter (case insensitive)</InputLabel>
-        <Input
-          id='filter'
-          onChange={this.filterHandler}
-          value={this.state.filter}
-        />
+        <FormControl className={classes.formControl}>
+          <InputLabel>Search filter</InputLabel>
+          <Input
+            id='filter'
+            onChange={this.filterHandler}
+            value={this.state.filter}
+          />
+        </FormControl>
         <TableContainer component={Paper}>
           <Table className={classes.table} aria-label="sequence table">
+            <colgroup>
+              <col style={{width: '25%'}}/>
+              <col style={{width: '25%'}}/>
+              <col style={{width: '50%'}}/>
+            </colgroup>
             <TableHead>
               <TableRow>
                 <TableCell>
@@ -212,36 +227,36 @@ class Sequences extends Component {
                 <TableRow
                   hover
                   key={row.id}
-                  onClick={(event) => this.openModal(event, row.id)}
+                  onClick={(event) => this.openDialog(event, row.id)}
                 >
-                  <TableCell component="th" scope="row">
+                  <TableCell className={classes.tableCell} component="th" scope="row">
                     {row.name}
                   </TableCell>
-                  <TableCell>{row.description}</TableCell>
-                  <TableCell>{row.preview}</TableCell>
+                  <TableCell className={classes.tableCell}>{row.description}</TableCell>
+                  <TableCell className={classes.tableCell}>{row.preview}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
         <Dialog
-          open={this.state.modal.isOpen}
-          onClose={this.closeModal}
+          open={this.state.dialog.isOpen}
+          onClose={this.closeDialog}
           scroll='paper'
           aria-labelledby="sequence-dialog-title"
           aria-describedby="sequence-dialog-description"
         >
-          <DialogTitle id="sequence-dialog-title">{this.state.modal.name}</DialogTitle>
+          <DialogTitle id="sequence-dialog-title">{this.state.dialog.name}</DialogTitle>
           <DialogContent dividers>
             <DialogContentText
               className={classes.dialogContentText}
               id="sequence-dialog-description"
             >
-              {this.colorSequence(this.state.modal.sequence)}
+              {this.colorSequence(this.state.dialog.sequence)}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.closeModal} color="primary">
+            <Button onClick={this.closeDialog} color="primary">
               Close
             </Button>
           </DialogActions>
