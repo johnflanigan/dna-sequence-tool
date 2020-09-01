@@ -13,7 +13,11 @@ Here are some potential future enhancements for this tool.
 * Add bulk upload
 * Put views on different routes
 * Pagination on table
-  * Filtering and sorting server-side
+* Server-side filtering and sorting 
+* Add security to application (UI and API)
+* Improve response time, either upgrade Heroku app or migrate to a different service
+* Server-side validation
+* Dark mode toggle
 
 ## Available Scripts
 
